@@ -1,0 +1,70 @@
+classdef HiddenLayer
+    properties
+        weights
+        bias
+    end
+    
+    methods
+        function obj = HiddenLayer(hiddenSize, inputSize)
+            obj.weights = randn(hiddenSize, inputSize);
+            obj.bias = randn(hiddenSize, 1);
+        end
+    end
+end
+
+classdef OutputLayer
+    properties
+        weights
+        bias
+    end
+    
+    methods
+        function obj = OutputLayer(outputSize, hiddenSize)
+            obj.weights = randn(outputSize, hiddenSize);
+            obj.bias = randn(outputSize, 1);
+        end
+    end
+end
+
+InputSize = 64;
+HiddenSize = 128;
+OutputSize = 10;
+LearningRate = 0.01;
+Epochs = 10;
+
+sigmoid = @(x) 1.0 ./ (1.0 + exp(-x));
+
+function output = forwardPropagation(input, hiddenLayer, outputLayer)
+    hiddenOutput = sigmoid(hiddenLayer.bias + hiddenLayer.weights * input);
+
+    output = sigmoid(outputLayer.bias + outputLayer.weights * hiddenOutput);
+end
+
+function backPropagation(input, target, hiddenLayer, outputLayer)
+    hiddenOutput = sigmoid(hiddenLayer.bias + hiddenLayer.weights * input);
+    output = forwardPropagation(input, hiddenLayer, outputLayer);
+
+    outputDelta = (output - target) .* output .* (1 - output);
+    hiddenDelta = (outputLayer.weights' * outputDelta) .* hiddenOutput .* (1 - hiddenOutput);
+
+    outputLayer.weights = outputLayer.weights - LearningRate .* (outputDelta * hiddenOutput');
+    outputLayer.bias = outputLayer.bias - LearningRate .* outputDelta;
+
+    hiddenLayer.weights = hiddenLayer.weights - LearningRate .* (hiddenDelta * input');
+    hiddenLayer.bias = hiddenLayer.bias - LearningRate .* hiddenDelta;
+end
+
+input = /* Input values here */;
+target = /* Target values here */;
+
+hiddenLayer = HiddenLayer(HiddenSize, InputSize);
+outputLayer = OutputLayer(OutputSize, HiddenSize);
+
+for epoch = 1:Epochs
+    backPropagation(input, target, hiddenLayer, outputLayer);
+end
+
+output = forwardPropagation(input, hiddenLayer, outputLayer);
+
+disp('Output:');
+disp(output);

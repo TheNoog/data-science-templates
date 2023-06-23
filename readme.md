@@ -27,5 +27,3 @@ The following folders are mapped to the listed model. These are for reference pu
 | rbm                  | Restricted Boltzmann Machines                   |
 | rnn                  | Recurrent Neural Networks                       |
 | svm                  | Support Vector Machines                         |
-| xgboost              | XGBoost - Gradient Boosting                     |
-

@@ -1,0 +1,9 @@
+# Gradient Boosted Model
+
+A gradient boosted model is a type of ensemble machine learning model that combines multiple individual models, typically decision trees, to make predictions. It is based on the idea of iteratively training weak models and combining their predictions to create a strong overall model. Gradient boosting algorithms build the models in a sequential manner, where each new model is trained to correct the mistakes made by the previous models.
+
+The key idea behind gradient boosting is to fit the new model to the residual errors (the differences between the actual target values and the predictions of the previous models). This allows the subsequent models to focus on the patterns that were not captured by the earlier models, gradually reducing the overall prediction errors. The final prediction is obtained by summing up the predictions from all the individual models.
+
+XGBoost (Extreme Gradient Boosting) is a popular implementation of gradient boosting that is known for its efficiency, scalability, and high performance. It is widely used in machine learning competitions and data science projects. XGBoost incorporates several enhancements to the traditional gradient boosting algorithm, including regularization techniques, parallel processing, and a highly optimized implementation. These enhancements make XGBoost faster, more accurate, and less prone to overfitting compared to other gradient boosting implementations.
+
+XGBoost supports both regression and classification tasks and provides a rich set of hyperparameters to fine-tune the model's performance. It also offers features like early stopping to prevent overfitting and tree pruning to improve interpretability and generalization. Overall, XGBoost has become a popular choice for gradient boosting due to its powerful capabilities and its ability to handle diverse datasets and problem domains effectively.

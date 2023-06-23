@@ -1,0 +1,75 @@
+classdef NeuralNetwork
+    properties
+        weights1
+        weights2
+        biases1
+        biases2
+        learningRate
+        activation
+        derivative
+    end
+    
+    methods
+        function obj = NeuralNetwork(inputSize, hiddenSize, outputSize, learningRate)
+            obj.weights1 = rand(inputSize, hiddenSize);
+            obj.weights2 = rand(hiddenSize, outputSize);
+            obj.biases1 = rand(1, hiddenSize);
+            obj.biases2 = rand(1, outputSize);
+            obj.learningRate = learningRate;
+            obj.activation = @(x) 1./(1 + exp(-x));
+            obj.derivative = @(x) obj.activation(x).*(1 - obj.activation(x));
+        end
+        
+        function output = predict(obj, X)
+            hiddenLayer = X * obj.weights1;
+            hiddenLayer = obj.activation(hiddenLayer + obj.biases1);
+            
+            outputLayer = hiddenLayer * obj.weights2;
+            outputLayer = obj.activation(outputLayer + obj.biases2);
+            
+            output = outputLayer;
+        end
+        
+        function train(obj, X, y, epochs)
+            for epoch = 1:epochs
+                % Forward pass
+                hiddenLayer = X * obj.weights1;
+                hiddenLayer = obj.activation(hiddenLayer + obj.biases1);
+                
+                outputLayer = hiddenLayer * obj.weights2;
+                outputLayer = obj.activation(outputLayer + obj.biases2);
+                
+                % Backpropagation
+                outputLayerError = y - outputLayer;
+                outputLayerDelta = obj.derivative(outputLayer);
+                outputLayerErrorDelta = outputLayerError .* outputLayerDelta;
+                
+                hiddenLayerError = outputLayerErrorDelta * obj.weights2';
+                hiddenLayerDelta = obj.derivative(hiddenLayer);
+                hiddenLayerErrorDelta = hiddenLayerError .* hiddenLayerDelta;
+                
+                % Weight and bias adjustments
+                hiddenLayerAdjustment = X' * hiddenLayerErrorDelta;
+                outputLayerAdjustment = hiddenLayer' * outputLayerErrorDelta;
+                
+                obj.weights1 = obj.weights1 + obj.learningRate * hiddenLayerAdjustment;
+                obj.weights2 = obj.weights2 + obj.learningRate * outputLayerAdjustment;
+                
+                obj.biases1 = obj.biases1 + obj.learningRate * sum(hiddenLayerErrorDelta);
+                obj.biases2 = obj.biases2 + obj.learningRate * sum(outputLayerErrorDelta);
+            end
+        end
+    end
+end
+
+% Example usage
+X = [0 0; 0 1; 1 0; 1 1];
+y = [0; 1; 1; 0];
+
+nn = NeuralNetwork(2, 4, 1, 0.1);
+epochs = 1000;
+nn.train(X, y, epochs);
+
+predictions = nn.predict(X);
+disp("Predicted Output:");
+disp(predictions);

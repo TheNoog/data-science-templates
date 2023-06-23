@@ -1,0 +1,89 @@
+classdef Itemset
+    properties
+        Items
+    end
+    
+    methods
+        function obj = Itemset(varargin)
+            obj.Items = [varargin{:}];
+        end
+    end
+end
+
+classdef FrequentItemset
+    properties
+        Itemset
+        Support
+    end
+    
+    methods
+        function obj = FrequentItemset(itemset, support)
+            obj.Itemset = itemset;
+            obj.Support = support;
+        end
+    end
+end
+
+% Function to check if itemset B is a subset of itemset A
+function isSubset = isSubset(A, B)
+    isSubset = all(ismember(B.Items, A.Items));
+end
+
+% Function to check if an itemset is frequent
+function isFrequent = isFrequent(itemset, transactions, minSupport)
+    count = sum(arrayfun(@(transaction) isSubset(transaction, itemset), transactions));
+    isFrequent = count >= minSupport;
+end
+
+% Function to generate frequent itemsets
+function generateFrequentItemsets(transactions, numItems, minSupport)
+    itemsets = Itemset.empty();
+
+    % Initialize with single items
+    for i = 1:numItems
+        itemset = Itemset(i);
+        itemsets(end + 1) = itemset;
+    end
+
+    % Generate frequent itemsets
+    for k = 2:numItems
+        newItems = Itemset.empty();
+
+        for i = 1:length(itemsets)
+            for j = i + 1:length(itemsets)
+                % Create a candidate itemset
+                candidateItems = [itemsets(i).Items, itemsets(j).Items(end)];
+                candidate = Itemset(candidateItems);
+
+                % Check if the candidate itemset is frequent
+                if isFrequent(candidate, transactions, minSupport)
+                    newItems(end + 1) = candidate;
+                end
+            end
+        end
+
+        % Copy the new itemsets
+        itemsets = [itemsets, newItems];
+    end
+
+    % Print frequent itemsets
+    for i = 1:length(itemsets)
+        itemset = itemsets(i);
+        fprintf('Itemset: %s\n', num2str(itemset.Items));
+    end
+end
+
+numTransactions = 5;
+numItems = 4;
+minSupport = 2;
+
+% Create a sample dataset
+transactions = [
+    Itemset(1, 2, 3),
+    Itemset(2, 3),
+    Itemset(1, 3, 4),
+    Itemset(1, 3),
+    Itemset(1, 2, 3)
+];
+
+generateFrequentItemsets(transactions, numItems, minSupport);

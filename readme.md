@@ -24,6 +24,5 @@ The following folders are mapped to the listed model. These are for reference pu
 | naive_bayes          | Naive Bayes                                     |
 | pca                  | Principal Component Analysis                    |
 | random_forest        | Random Forest                                   |
-| rbm                  | Restricted Boltzmann Machines                   |
 | rnn                  | Recurrent Neural Networks                       |
 | svm                  | Support Vector Machines                         |
